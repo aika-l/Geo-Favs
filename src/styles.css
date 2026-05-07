@@ -1,0 +1,47 @@
+.App {
+  font-family: sans-serif;
+  text-align: center;
+}
+.boxy {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centers the container and favs horizontally */
+  width: 100%;
+}
+.container {
+  background-color: lightgreen;
+  width: 500px;
+  min-height: 150px;
+  margin: 50px auto 20px auto;
+  padding: 30px;
+  border-radius: 5px;
+  color: darkslategrey;
+  font-size: 20px;
+}
+input {
+  width: 300px;
+  padding: 10px;
+  border-radius: 5px;
+}
+.list {
+  list-style: none;
+  padding: 10px;
+  margin: 0;
+  width: 300px;
+  border: solid 1px gray;
+  color: rgb(13, 67, 245);
+  background-color: ivory;
+}
+ul {
+  margin: 0;
+  padding: 0;
+}
+.favs-container {
+  width: 500px;
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 50px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}

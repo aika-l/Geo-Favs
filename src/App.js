@@ -30,14 +30,14 @@ class App extends React.Component {
 
     try {
       const apiCall = await fetch(
-        `https://restcountries.com/v3.1/name/${input}`
+        `https://restcountries.com/v3.1/name/${input}`,
       );
       const data = await apiCall.json();
 
       if (Array.isArray(data)) {
         // Store full objects instead of just names
         const filtered = data.filter((st) =>
-          st.name.common.toLowerCase().startsWith(input.toLowerCase())
+          st.name.common.toLowerCase().startsWith(input.toLowerCase()),
         );
 
         if (filtered.length > 0) {
@@ -65,45 +65,63 @@ class App extends React.Component {
     });
   };
 
-  toggleFavorite = (name) => {
-    const favorites = this.state.favorites || [];
-    if (favorites.includes(name)) {
-      // Remove from favorites
-      this.setState({ favorites: favorites.filter((fav) => fav !== name) });
+  toggleFavorite = (country) => {
+    const { favorites } = this.state;
+    const isAlreadyFav = favorites.find(
+      (fav) => fav.name.common === country.name.common,
+    );
+    if (isAlreadyFav) {
+      this.setState({
+        favorites: favorites.filter(
+          (fav) => fav.name.common !== country.name.common,
+        ),
+      });
     } else {
-      // Add to favorites
-      this.setState({ favorites: [...favorites, name] });
+      this.setState({
+        favorites: [...favorites, country],
+      });
     }
   };
+  // toggleFavorite = (name) => {
+  //   const favorites = this.state.favorites || [];
+  //   if (favorites.includes(name)) {
+  //     // Remove from favorites
+  //     this.setState({ favorites: favorites.filter((fav) => fav !== name) });
+  //   } else {
+  //     // Add to favorites
+  //     this.setState({ favorites: [...favorites, name] });
+  //   }
+  // };
 
   render() {
     const { input, countries, errorMessage, selectedCountry, favorites } =
       this.state;
 
     const isFavorite =
-      selectedCountry && favorites.includes(selectedCountry.name.common);
+      selectedCountry &&
+      favorites.some((fav) => fav.name.common === selectedCountry.name.common);
 
     return (
       <div className="boxy">
         <div className="container">
-          <p>Search:</p>
-          <input value={input} onChange={this.onInput} />
+          <div className="search">
+            <p>Search:</p>
+            <input value={input} onChange={this.onInput} />
 
-          <ul>
-            {countries.map((item) => (
-              <li
-                key={item.cca3}
-                className="list"
-                onClick={() => this.select(item)}
-              >
-                {item.name.common}
-              </li>
-            ))}
-          </ul>
+            <ul>
+              {countries.map((item) => (
+                <li
+                  key={item.cca3}
+                  className="list"
+                  onClick={() => this.select(item)}
+                >
+                  {item.name.common}
+                </li>
+              ))}
+            </ul>
 
-          {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
-
-          <hr />
+            {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
+          </div>
 
           {/* DETAILS SECTION */}
           {selectedCountry && (
@@ -139,7 +157,7 @@ class App extends React.Component {
                 <button
                   onClick={() => {
                     if (selectedCountry) {
-                      this.toggleFavorite(selectedCountry.name.common);
+                      this.toggleFavorite(selectedCountry);
                     }
                   }}
                   style={{
@@ -165,8 +183,12 @@ class App extends React.Component {
           )}
         </div>
 
-        {/* Data from Favs */}
-        <Favs favorites={favorites} />
+        {favorites.length > 0 && (
+          <Favs
+            favorites={this.state.favorites}
+            toggleFavorite={this.toggleFavorite}
+          />
+        )}
       </div>
     );
   }

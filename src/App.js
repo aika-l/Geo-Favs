@@ -2,6 +2,8 @@ import React from "react";
 import "./styles.css";
 import Favs from "./Favs";
 
+const API_URL = "http://localhost:8000/api/favorites";
+
 class App extends React.Component {
   constructor() {
     super();
@@ -13,6 +15,28 @@ class App extends React.Component {
       favorites: [],
     };
   }
+
+  componentDidMount() {
+    this.loadFavorites();
+  }
+
+  loadFavorites = async () => {
+    try {
+      const response = await fetch(API_URL);
+      const data = await response.json();
+
+      const formattedFavorites = data.map((fav) => ({
+        name: { common: fav.common_name },
+        flags: { png: fav.flag_png },
+        region: fav.region,
+        capital: fav.capital ? [fav.capital] : [],
+      }));
+
+      this.setState({ favorites: formattedFavorites });
+    } catch (err) {
+      console.error("Error loading favorites:", err);
+    }
+  };
 
   onInput = (e) => {
     this.setState({ input: e.target.value }, () => {
@@ -65,21 +89,42 @@ class App extends React.Component {
     });
   };
 
-  toggleFavorite = (country) => {
+  toggleFavorite = async (country) => {
     const { favorites } = this.state;
     const isAlreadyFav = favorites.find(
       (fav) => fav.name.common === country.name.common,
     );
-    if (isAlreadyFav) {
-      this.setState({
-        favorites: favorites.filter(
-          (fav) => fav.name.common !== country.name.common,
-        ),
-      });
-    } else {
-      this.setState({
-        favorites: [...favorites, country],
-      });
+    try {
+      if (isAlreadyFav) {
+        await fetch(`${API_URL}/${country.name.common}`, {
+          method: "DELETE",
+        });
+
+        this.setState({
+          favorites: favorites.filter(
+            (fav) => fav.name.common !== country.name.common,
+          ),
+        });
+      } else {
+        await fetch(API_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            common_name: country.name.common,
+            flag_png: country.flags.png,
+            region: country.region,
+            capital: country.capital?.[0] || "",
+          }),
+        });
+
+        this.setState({
+          favorites: [...favorites, country],
+        });
+      }
+    } catch (err) {
+      console.error("Error updating favorite:", err);
     }
   };
   // toggleFavorite = (name) => {

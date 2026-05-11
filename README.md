@@ -8,11 +8,14 @@ Geo-Favs is a web application with a frontend and backend that allows users to e
 
 ---
 
+It uses public API to search for a country. When the like button (heart) is pressed, it stores that country in the local database (MySQL), and if pressed the like button again (unlike), it removes it from the database.
+
 ## Tech Stack
 
 - React (Create React App)
 - Node.js / npm
 - JavaScript
+- Python
 - MySQL
 
 ---
@@ -36,3 +39,11 @@ npm install --legacy-peer-deps
 export NODE_OPTIONS=--openssl-legacy-provider
 npm start
 ```
+
+---
+
+## Future improvements:
+
+1. Need to add delete db after a period of time, or have a limit of favorite countries
+2. Update node.js to newer version
+3. Work on UI to prettify

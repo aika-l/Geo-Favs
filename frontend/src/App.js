@@ -2,7 +2,8 @@ import React from "react";
 import "./styles.css";
 import Favs from "./Favs";
 
-const API_URL = "http://localhost:8000/api/favorites";
+const API_HOST = process.env.REACT_APP_API_HOST;
+const API_URL = `${API_HOST}/api/favorites`;
 
 class App extends React.Component {
   constructor() {

@@ -98,6 +98,12 @@ export NODE_OPTIONS=--openssl-legacy-provider
 npm start
 ```
 
+To run backend:
+
+```bash
+uvicorn main:app --reload --port 8000
+```
+
 ---
 
 ## Future improvements:
